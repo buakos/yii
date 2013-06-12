@@ -185,6 +185,15 @@ class CButtonColumn extends CGridColumn
 	 */
 	public $buttons=array();
 
+	// TODO: docs	
+	public $filterHtmlOptions=array('class'=>'button-column');
+	// TODO: docs
+	public $clearFiltersShown=false;
+	// TODO: docs
+	public $clearFiltersExclude=null;
+	// TODO: docs
+	public $clearFiltersImageUrl=null;
+
 	/**
 	 * Initializes the column.
 	 * This method registers necessary client script for the button column.
@@ -228,6 +237,8 @@ class CButtonColumn extends CGridColumn
 			$this->deleteButtonImageUrl=$this->grid->baseScriptUrl.'/delete.png';
 		if($this->deleteConfirmation===null)
 			$this->deleteConfirmation=Yii::t('zii','Are you sure you want to delete this item?');
+		if($this->clearFiltersImageUrl===null)
+			$this->clearFiltersImageUrl=$this->deleteButtonImageUrl;
 
 		foreach(array('view','update','delete') as $id)
 		{
@@ -345,5 +356,23 @@ EOD;
 			echo CHtml::link(CHtml::image($button['imageUrl'],$label),$url,$options);
 		else
 			echo CHtml::link($label,$url,$options);
+	}
+	
+	// TODO: docs
+	protected function renderFilterCellContent()
+	{
+		if(!$this->clearFiltersShown)
+			parent::renderFilterCellContent();
+		else
+		{
+			$handler="jQuery('#{$this->grid->id}').yiiGridView('clearFilters'";
+			if(is_string($this->clearFiltersExclude) && $this->clearFiltersExclude!=='')
+				$handler.=", '$this->clearFiltersExclude'";
+			$handler.=');';
+
+			$desc=Yii::t('zii','Clear filters');
+			$img=CHtml::image($this->clearFiltersImageUrl,$desc);
+			echo CHtml::link($img,'#',array('onclick'=>$handler,'class'=>'clear-filters','title'=>$desc));
+		}
 	}
 }
