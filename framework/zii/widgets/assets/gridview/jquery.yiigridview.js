@@ -9,6 +9,7 @@
 
 (function ($) {
 	var selectCheckedRows, methods, 
+		suppressFilterChanges = false,
 	 	yiiXHR={},
 		gridSettings = [];
 	/**
@@ -115,6 +116,9 @@
 							return;
 						}
 					}
+					if (suppressFilterChanges) {
+						return;
+					};
 					var data = $(settings.filterSelector).serialize();
 					if (settings.pageVar !== undefined) {
 						data += '&' + settings.pageVar + '=1';
@@ -382,6 +386,24 @@
 				}
 			});
 			return checked;
+		},
+
+		// TODO: docs
+		clearFilters: function (exclude) {
+			try {
+				suppressFilterChanges = true;
+				var settings = gridSettings[this.attr('id')];
+				var $filters = $(settings.filterSelector).not(exclude);
+				if ($filters.length > 0) {
+					$filters.each(function (i) {
+						$(this).val('');
+					});
+					suppressFilterChanges = false;
+					$filters.first().trigger('change');
+				}
+			} finally {
+				suppressFilterChanges = false;
+			}
 		}
 		
 	};
