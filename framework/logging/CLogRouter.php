@@ -122,5 +122,6 @@ class CLogRouter extends CApplicationComponent
 			if($route->enabled)
 				$route->collectLogs($logger,true);
 		}
+		$logger->clear();
 	}
 }

@@ -351,4 +351,9 @@ class CLogger extends CComponent
 	{
 		$this->raiseEvent('onFlush', $event);
 	}
+
+	public function clear() {
+		$this->_logs=array();
+		$this->_logCount=0;
+	}
 }
